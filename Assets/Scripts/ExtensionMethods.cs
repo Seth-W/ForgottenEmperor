@@ -1,4 +1,4 @@
-﻿namespace CFE.Extensions
+﻿namespace CFE.MethodExtensions
 {
     public static class ExtensionMethods
     {

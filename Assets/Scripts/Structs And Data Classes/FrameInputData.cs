@@ -5,22 +5,23 @@
 
     class FrameInputData
     {
-        Vector3 _mousePositionScreen, _mousePositionWorld;
-        public Vector3 mousePositionScreen { get { return _mousePositionScreen; } }
-        public Vector3 mousePositionWorld { get { return _mousePositionWorld; } }
+        public Vector3 mousePositionScreen, mousePositionWorld;
 
         MouseInputData _mouseData;
         public MouseInputData mouseData { get { return _mouseData; } }
 
         public TilePosition tilePos;
 
-        public FrameInputData(Vector3 screenPos)
+        public bool isPaused;
+
+        public FrameInputData(Vector3 screenPos, bool paused)
         {
             _mouseData = new MouseInputData();
 
-            _mousePositionScreen = screenPos;
-            _mousePositionWorld = Camera.main.ScreenToWorldPoint(screenPos);
-            tilePos = new TilePosition(_mousePositionWorld);
+            mousePositionScreen = screenPos;
+            mousePositionWorld = Camera.main.ScreenToWorldPoint(screenPos);
+            tilePos = new TilePosition(mousePositionWorld);
+            isPaused = paused;
         }
     }
 }

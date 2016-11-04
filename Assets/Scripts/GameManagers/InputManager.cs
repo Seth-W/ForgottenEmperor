@@ -10,9 +10,13 @@
 
         public static FrameInput FrameInputEvent;
 
+        bool _isPaused = false;
+
         void Update()
         {
-            FrameInputEvent(new FrameInputData(Input.mousePosition));
+            if (Input.GetKeyDown(KeyCode.Space))
+                _isPaused = !_isPaused;
+            FrameInputEvent(new FrameInputData(Input.mousePosition, _isPaused));
         }
     }
 }
