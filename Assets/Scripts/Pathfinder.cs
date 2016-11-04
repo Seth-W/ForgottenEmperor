@@ -79,10 +79,10 @@
 
         private static void enqueueNeighbors(BinaryHeap_Min<PathfindingPosition> frontier, PathfindingPosition workingTile, PathfindingPosition endTile)
         {
-            enqueueNorthNeighbor(frontier, workingTile, endTile);
             enqueueEastNeighbor(frontier, workingTile, endTile);
-            enqueueSouthNeighbor(frontier, workingTile, endTile);
             enqueueWestNeighbor(frontier, workingTile, endTile);
+            enqueueSouthNeighbor(frontier, workingTile, endTile);
+            enqueueNorthNeighbor(frontier, workingTile, endTile);
         }
 
         private static void enqueueNorthNeighbor(BinaryHeap_Min<PathfindingPosition> frontier, PathfindingPosition workingTile, PathfindingPosition endTile)
@@ -187,9 +187,9 @@
 
         private static void resetGraph(PathfindingPosition[,] graph)
         {
-            for (int i = 0; i < graph.GetLength(0); i++)
+            for (int i = 0; i < DataManager.Width + 1; i++)
             {
-                for (int j = 0; j < graph.GetLength(1); j++)
+                for (int j = 0; j < DataManager.Height + 1; j++)
                 {
                     graph[i, j].reset();
                 }

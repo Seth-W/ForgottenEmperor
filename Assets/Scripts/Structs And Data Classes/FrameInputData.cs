@@ -10,7 +10,7 @@
         public Vector3 mousePositionWorld { get { return _mousePositionWorld; } }
 
         MouseInputData _mouseData;
-        public MouseInputData mouseData;
+        public MouseInputData mouseData { get { return _mouseData; } }
 
         public TilePosition tilePos;
 

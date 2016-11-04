@@ -35,8 +35,8 @@
             this.xIndex = xIndex;
             this.yIndex = yIndex;
 
-            xIndex = Mathf.Clamp(xIndex, -DataManager.Width / 2, DataManager.Width / 2);
-            yIndex = Mathf.Clamp(yIndex, -DataManager.Height / 2, DataManager.Height / 2);
+            //xIndex = Mathf.Clamp(xIndex, -DataManager.Width / 2, DataManager.Width / 2);
+            //yIndex = Mathf.Clamp(yIndex, -DataManager.Height / 2, DataManager.Height / 2);
 
             tilePosition = new Vector3();
 
