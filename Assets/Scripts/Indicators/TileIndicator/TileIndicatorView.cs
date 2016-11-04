@@ -26,7 +26,7 @@
         *Moves the game object to a given <see cref="Vector3"/>
         *</summary>
         */
-        void setPosition(Vector3 newPos)
+        public void setPosition(Vector3 newPos)
         {
             transform.position = newPos;
         }
@@ -36,7 +36,7 @@
         *Moves the game object to a given <see cref="TilePosition"/>
         *</summary>
         */
-        void setPosition(TilePosition tilePos)
+        public void setPosition(TilePosition tilePos)
         {
             transform.position = tilePos.tilePosition;
         }

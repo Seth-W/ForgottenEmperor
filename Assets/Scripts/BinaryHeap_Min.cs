@@ -48,7 +48,12 @@
             heapifyUp(heapSize - 1);
         }
 
-        void heapifyUp(int nodeIndex)
+        /**
+        *<summary>
+        *Reorders the heap when a new object is added at the given <paramref name="nodeIndex"/>
+        *</summary>
+        */
+        private void heapifyUp(int nodeIndex)
         {
             int parentIndex;
 
@@ -67,7 +72,12 @@
             }
         }
 
-        void heapifyDown(int nodeIndex)
+        /**
+        *<summary>
+        *Reorders the heap when an object is removedf from the top of the subtree starting at the given index
+        *</summary>
+        */
+        private void heapifyDown(int nodeIndex)
         {
             int leftChildIndex, rightChildIndex, minIndex;
             leftChildIndex = getLeftChildIndex(nodeIndex);
@@ -102,7 +112,12 @@
 
         }
 
-        void swapElements(int parentIndex, int childIndex)
+        /**
+        *<summary>
+        *Swaps the position of two elements in the heap
+        *</summary>
+        */
+        private void swapElements(int parentIndex, int childIndex)
         {
             BinaryHeapWrapper<T> temp;
             temp = heap[parentIndex];
@@ -110,10 +125,15 @@
             heap[childIndex] = temp;
         }
 
-        void resizeArray()
+        /**
+        *<summary>
+        *Increases the size of the primary array by 1
+        *</summary>
+        */
+        private void resizeArray()
         {
             BinaryHeapWrapper<T>[] newHeap = new BinaryHeapWrapper<T>[heapSize + 1];
-            for (int i = 0; i < heapSize + 1; i++)
+            for (int i = 0; i < heapSize; i++)
             {
                 newHeap[i] = heap[i];
             }
@@ -121,41 +141,41 @@
         }
 
         #region Heap->Array Index Helper Functions
-        int getLeftChildIndex(int nodeIndex)
+        private int getLeftChildIndex(int nodeIndex)
         {
             return 2 * nodeIndex + 1;
         }
 
-        int getRightChildIndex(int nodeIndex)
+        private int getRightChildIndex(int nodeIndex)
         {
             return 2 * nodeIndex + 2;
         }
 
-        int getParentIndex(int nodeIndex)
+        private int getParentIndex(int nodeIndex)
         {
             return (nodeIndex - 1) / 2;
         }
         #endregion
-    }
 
-    #region BinaryHeap Generic Wrapper Class
-    /**
-    *<summary>
-    *A Generic Wrapper to store an object with its key value
-    *</summary>
-    */
-    class BinaryHeapWrapper<F>
-    {
-        int _key;
-        public int key { get { return _key; } }
-        F _obj;
-        public F obj { get { return obj; } }
-
-        public BinaryHeapWrapper(F obj, int key)
+        /**
+        *<summary>
+        *A Generic Wrapper to store an object with its key value
+        *</summary>
+        */
+        private class BinaryHeapWrapper<F>
         {
-            _obj = obj;
-            _key = key;
+            int _key;
+            public int key { get { return _key; } }
+            F _obj;
+            public F obj { get { return _obj; } }
+
+            public BinaryHeapWrapper(F obj, int key)
+            {
+                _obj = obj;
+                _key = key;
+            }
         }
     }
-    #endregion
+
+
 }

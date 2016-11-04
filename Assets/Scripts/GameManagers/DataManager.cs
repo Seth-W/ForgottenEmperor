@@ -19,6 +19,7 @@
             alreadyInitialized = true;
             Width = _width;
             Height = _height;
+            Pathfinder.init();
         }
 
     }

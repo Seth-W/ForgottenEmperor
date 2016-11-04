@@ -28,7 +28,7 @@
         *Moves the game object to a given <see cref="Vector3"/>
         *</summary>
         */
-        void setPosition(Vector3 newPos)
+        public void setPosition(Vector3 newPos)
         {
             newPos.z = zOffset;
             transform.position = newPos;

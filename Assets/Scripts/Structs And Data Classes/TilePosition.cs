@@ -2,7 +2,7 @@
 {
     using UnityEngine;
 
-    struct TilePosition
+    public struct TilePosition
     {
         public Vector3 tilePosition;
         public int xIndex, yIndex;
@@ -58,6 +58,28 @@
 
             tilePosition.x = xIndex;
             tilePosition.y = yIndex;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() != GetType())
+                return false;
+            TilePosition pos = (TilePosition)obj;
+            return xIndex == pos.xIndex && yIndex == pos.yIndex;
+        }
+
+        public override int GetHashCode()
+        {
+            return xIndex * yIndex;
+        }
+
+        public static bool operator == (TilePosition posA, TilePosition posB)
+        {
+            return (posA.Equals(posB));
+        }
+        public static bool operator != (TilePosition posA, TilePosition posB)
+        {
+            return !(posA.Equals(posB));
         }
     }
 }
