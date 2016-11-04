@@ -58,7 +58,7 @@
             resetGraph(graph);
 
             PathfindingPosition startPos = graph[start.xIndex, start.yIndex];
-            PathfindingPosition endPos = graph[end.xIndex, start.yIndex];
+            PathfindingPosition endPos = graph[end.xIndex, end.yIndex];
 
             frontier.Enqueue(startPos, 0);
             PathfindingPosition workingTile = null;
