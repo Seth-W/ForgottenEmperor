@@ -5,6 +5,10 @@
 
     class EntityModel : MonoBehaviour
     {
+        public delegate void EntitySpawn(EntityModel model);
+
+        public static EntitySpawn EntitySpawnEvent;
+
         [SerializeField]
         float _speed;
         public float speed { get { return _speed; } }
@@ -27,13 +31,16 @@
 
         Queue<IAction> actionQueue;
         IAction currentAction;
-
+        
+        #region MonoBehaviours
         void Start()
         {
             actionQueue = new Queue<IAction>();
 
             _control = GetComponent<EntityControl>();
             _view = GetComponent<EntityView>();
+
+            EntitySpawnEvent(this);
         }
 
         void OnEnable()
@@ -45,7 +52,13 @@
         {
             TickManager.TickUpdateEvent -= OnTickUpdate;
         }
+        #endregion
 
+        /**
+        *<summary>
+        *Executes the current Action. If the current action finishes executing dequeues the next action
+        *</summary>
+        */
         void OnTickUpdate(Tick data)
         {
             if(currentAction != null)
@@ -58,7 +71,7 @@
             else
             {
                 if (actionQueue.Count > 0)
-                    currentAction =actionQueue.Dequeue();
+                    currentAction = actionQueue.Dequeue();
             }
         }
 

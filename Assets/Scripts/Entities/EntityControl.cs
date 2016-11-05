@@ -22,24 +22,18 @@
         void OnEnable()
         {
             model = GetComponent<EntityModel>();
-
-            InputManager.FrameInputEvent += OnFrameInput;
         }
 
         void OnDisable()
         {
-            InputManager.FrameInputEvent -= OnFrameInput;
         }
 
-        void OnFrameInput(FrameInputData data)
-        {            
-            if(data.mouseData.mouse0Down && data.inPlayableArea)
-            {
-                Move(data.tilePos, Input.GetKey(KeyCode.LeftShift));
-            }
-        }
-
-
+        /**
+        *<summary>
+        *Queues a <see cref="MoveAction"/> for this tile
+        *<para>If <paramref name="queueAction"/> is false, simply runs the action instead</para>
+        *</summary>
+        */
         public void Move(TilePosition destination, bool queueAction)
         {
             if (queueAction)
