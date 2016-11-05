@@ -39,7 +39,7 @@
             }
             **/
             
-            if(data.mouseData.mouse0Down)
+            if(data.mouseData.mouse0Down && data.inPlayableArea)
             {
                 moveEntity(data.tilePos);
                 _isMoving = true;
@@ -62,7 +62,8 @@
             {
                 pathingWaypoints = Pathfinder.findPath(new TilePosition(transform.position), endPos).ToVector3Array();
                 pathingWaypoints[0] = transform.position;
-                pathingInterpolator = 1 - (Vector3.Distance(pathingWaypoints[0], pathingWaypoints[1]));
+                if(pathingWaypoints.Length > 1)
+                    pathingInterpolator = 1 - (Vector3.Distance(pathingWaypoints[0], pathingWaypoints[1]));
             }
             else
             {

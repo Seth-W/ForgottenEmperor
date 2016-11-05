@@ -12,7 +12,7 @@
 
         public TilePosition tilePos;
 
-        public bool isPaused;
+        public bool isPaused, inPlayableArea;
 
         public FrameInputData(Vector3 screenPos, bool paused)
         {
@@ -22,6 +22,25 @@
             mousePositionWorld = Camera.main.ScreenToWorldPoint(screenPos);
             tilePos = new TilePosition(mousePositionWorld);
             isPaused = paused;
+            inPlayableArea = getInPlayableArea();
+            Debug.Log(inPlayableArea);
+        }
+
+        /**
+        *<summary>
+        *If the mouse world position is outside the play area, returns false.
+        *Prevents mouse input being read when player is using UI1
+        *</summary>
+        */
+        private bool getInPlayableArea()
+        {
+            bool leftBounded = mousePositionWorld.x < -DataManager.Width / 2;
+            bool rightBounded = mousePositionWorld.x > DataManager.Width / 2;
+            bool lowerBounded = mousePositionWorld.y < -DataManager.Height / 2;
+            bool upperBounded = mousePositionWorld.y > DataManager.Height / 2;
+
+            Debug.Log(leftBounded.ToString() + rightBounded + lowerBounded + upperBounded);
+            return (leftBounded || rightBounded || lowerBounded || upperBounded);
         }
     }
 }
