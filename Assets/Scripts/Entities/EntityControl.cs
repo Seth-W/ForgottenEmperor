@@ -2,20 +2,21 @@
 {
     using UnityEngine;
     using MethodExtensions;
+    using Actions.EntityActions;
 
 
     class EntityControl : MonoBehaviour
     {
         protected EntityModel model;
-        bool _isMoving;
 
-        int pathingIndex = 0;
-        float pathingInterpolator = 0;
-        Vector3[] pathingWaypoints;
+        /// <summary>
+        /// The end position for all the Queued Move Actions
+        /// </summary>
+        TilePosition currentFullPathEndPos;
+
 
         void Start()
         {
-            pathingWaypoints = new Vector3[0];
         }
 
         void OnEnable()
@@ -31,72 +32,46 @@
         }
 
         void OnFrameInput(FrameInputData data)
-        {
-            /**
-            if (data.mouseData.mouse0down)
-            {
-                moveTo(data.tilePos);
-            }
-            **/
-            
+        {            
             if(data.mouseData.mouse0Down && data.inPlayableArea)
             {
-                moveEntity(data.tilePos);
-                _isMoving = true;
+                Move(data.tilePos, Input.GetKey(KeyCode.LeftShift));
             }
-            if(_isMoving && !data.isPaused)
-                FollowPath(pathingWaypoints, pathingIndex, pathingInterpolator);
         }
 
 
+        public void Move(TilePosition destination, bool queueAction)
+        {
+            if (queueAction)
+                model.enqueueAction(getMoveAction(currentFullPathEndPos, destination, true));
+            else
+                model.runAction(getMoveAction(new TilePosition(transform.position), destination, false));
+        }
+
         /**
         *<summary>
-        *Moves the entity to the given <see cref="TilePosition"/>
+        *Creates a <see cref="MoveAction"/> for the current entity from a starting <see cref="TilePosition"/> to another <see cref="TilePosition"/>
         *</summary>
         */
-        public void moveEntity(TilePosition endPos)
+        IAction getMoveAction(TilePosition startPos, TilePosition endPos, bool isActionQueued)
         {
-            pathingIndex = 0;
+            float pathingInterpolator = 0;
+            Vector3[] pathingWaypoints;
 
-            if (_isMoving)
+            if (model.isMoving && !isActionQueued)
             {
-                pathingWaypoints = Pathfinder.findPath(new TilePosition(transform.position), endPos).ToVector3Array();
+                pathingWaypoints = Pathfinder.findPath(startPos, endPos).ToVector3Array();
                 pathingWaypoints[0] = transform.position;
                 if(pathingWaypoints.Length > 1)
                     pathingInterpolator = 1 - (Vector3.Distance(pathingWaypoints[0], pathingWaypoints[1]));
             }
             else
             {
-                pathingWaypoints = Pathfinder.findPath(new TilePosition(transform.position), endPos).ToVector3Array();
+                pathingWaypoints = Pathfinder.findPath(startPos, endPos).ToVector3Array();
                 pathingInterpolator = 0f;
             }
-        }
-
-        void FollowPath(Vector3[] waypoints, int index, float interpolator)
-        {
-            if (index >= waypoints.Length - 1)
-            {
-                _isMoving = false;
-                return;
-            }
-            if (interpolator < 1f)
-            {
-                transform.position = Vector3.Lerp(waypoints[index], waypoints[index + 1], interpolator);
-                pathingInterpolator += Time.deltaTime * 10 * model.speed;
-                return;
-            }
-            transform.position = waypoints[index + 1];
-            pathingIndex++;
-            pathingInterpolator = 0f;
-        }
-
-        float getLengthAdjustedInterpolateValue(Vector3[] path, int index)
-        {
-            float xDis, yDis;
-            xDis = Mathf.Abs(path[index].x - path[index + 1].x);
-            yDis = Mathf.Abs(path[index].y - path[index + 1].y);
-
-            return xDis + yDis;
+            currentFullPathEndPos = endPos;
+            return new MoveAction(pathingWaypoints, pathingInterpolator, transform, model);
         }
     }
 }

@@ -23,7 +23,6 @@
             tilePos = new TilePosition(mousePositionWorld);
             isPaused = paused;
             inPlayableArea = getInPlayableArea();
-            Debug.Log(inPlayableArea);
         }
 
         /**
@@ -39,8 +38,7 @@
             bool lowerBounded = mousePositionWorld.y < -DataManager.Height / 2;
             bool upperBounded = mousePositionWorld.y > DataManager.Height / 2;
 
-            Debug.Log(leftBounded.ToString() + rightBounded + lowerBounded + upperBounded);
-            return (leftBounded || rightBounded || lowerBounded || upperBounded);
+            return !(leftBounded || rightBounded || lowerBounded || upperBounded);
         }
     }
 }
