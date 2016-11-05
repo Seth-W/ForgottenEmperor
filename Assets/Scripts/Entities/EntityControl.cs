@@ -53,7 +53,7 @@
         *Creates a <see cref="MoveAction"/> for the current entity from a starting <see cref="TilePosition"/> to another <see cref="TilePosition"/>
         *</summary>
         */
-        IAction getMoveAction(TilePosition startPos, TilePosition endPos, bool isActionQueued)
+        private IAction getMoveAction(TilePosition startPos, TilePosition endPos, bool isActionQueued)
         {
             float pathingInterpolator = 0;
             Vector3[] pathingWaypoints;

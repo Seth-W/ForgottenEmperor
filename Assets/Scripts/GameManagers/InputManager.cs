@@ -10,7 +10,11 @@
 
         public static FrameInput FrameInputEvent;
 
-        bool _isPaused = false;
+        static bool _isPaused = false;
+
+        public static bool isPaused { get { return _isPaused; } }
+
+
 
         void Update()
         {

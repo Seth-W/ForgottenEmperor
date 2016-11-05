@@ -38,15 +38,15 @@
 
         void OnEnable()
         {
-
+            TickManager.TickUpdateEvent += OnTickUpdate;
         }
 
         void OnDisable()
         {
-
+            TickManager.TickUpdateEvent -= OnTickUpdate;
         }
 
-        void Update()
+        void OnTickUpdate(Tick data)
         {
             if(currentAction != null)
             {
