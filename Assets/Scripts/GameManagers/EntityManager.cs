@@ -73,11 +73,7 @@
         */
         void OnFrameInput(FrameInputData data)
         {
-            Debug.LogWarning("Should pass input data along to active entity instead of trying to call the specific method the entity will do");
-            if (data.mouseData.mouse0Down && data.inPlayableArea)
-            {
-                playerEntities[activePlayerIndex].control.Move(data.tilePos, Input.GetKey(KeyCode.LeftShift));
-            }
+            playerEntities[activePlayerIndex].control.OnFrameInput(data);
         }
         #endregion
     }
