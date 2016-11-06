@@ -5,8 +5,12 @@
 
     class EntityManager : MonoBehaviour
     {
-        int activePlayerIndex;
-        List<EntityModel> playerEntities;
+        int _activePlayerIndex = 0;
+        List<EntityModel> _playerEntities;
+        static List<EntityModel> playerEntities;
+        static int activePlayerIndex = 0; 
+
+        public static EntityModel activePlayer { get { return playerEntities[activePlayerIndex]; } }
 
         [SerializeField]
         Transform pathfindingDebugObj;
@@ -28,14 +32,14 @@
 
         void Start()
         {
-            activePlayerIndex = 0;
+            _playerEntities = new List<EntityModel>();
+            playerEntities = _playerEntities;
 
-            if(playerEntities != null)
+            if (_playerEntities != null)
             {
-                if (playerEntities.Count > 0)
+                if (_playerEntities.Count > 0)
                 {
-                    pathfindingDebugObj.parent = playerEntities[activePlayerIndex].transform;
-                    pathfindingDebugObj.localPosition = Vector3.zero;
+                    UpdateActiveIndex(0);
                 }
             }
         }
@@ -47,11 +51,11 @@
         *Tracks the given Entity Model
         *</summary>
         */
-        void OnEntitySpawn(EntityModel model)
+        private void OnEntitySpawn(EntityModel model)
         {
-            if (playerEntities == null)
-                playerEntities = new List<EntityModel>();
-            playerEntities.Add(model);
+            if (_playerEntities == null)
+                _playerEntities = new List<EntityModel>();
+            _playerEntities.Add(model);
         }
 
         /**
@@ -59,11 +63,17 @@
         *Updates the index of the active entity
         *</summary>
         */
-        void OnCharacterSelectButtonClick(int playerIndex)
+        private void UpdateActiveIndex(int playerIndex)
         {
+            _activePlayerIndex = playerIndex;
             activePlayerIndex = playerIndex;
-            pathfindingDebugObj.parent = playerEntities[activePlayerIndex].transform;
+            pathfindingDebugObj.parent = _playerEntities[_activePlayerIndex].transform;
             pathfindingDebugObj.localPosition = Vector3.zero;
+        }
+
+        private void OnCharacterSelectButtonClick(int playerIndex)
+        {
+            UpdateActiveIndex(playerIndex);
         }
 
         /**
@@ -71,9 +81,9 @@
         *Handles input data and distributes it to the active entity
         *</summary>
         */
-        void OnFrameInput(FrameInputData data)
+        private void OnFrameInput(FrameInputData data)
         {
-            playerEntities[activePlayerIndex].control.OnFrameInput(data);
+            _playerEntities[_activePlayerIndex].control.OnFrameInput(data);
         }
         #endregion
     }

@@ -21,7 +21,7 @@
             {
                 for (int j = 0; j < DataManager.Height + 1; j++)
                 {
-                    graph[i, j] = new PathfindingPosition(i, j, true);
+                    graph[i, j] = new PathfindingPosition(i, j);
                 }
             }
         }
@@ -40,7 +40,7 @@
             {
                 for (int j = 0; j < DataManager.Height + 1; j++)
                 {
-                    graph[i, j] = new PathfindingPosition(i, j, true);
+                    graph[i, j] = new PathfindingPosition(i, j);
                 }
             }
         }
@@ -54,11 +54,21 @@
 
         public static TilePosition[] findPath(TilePosition start, TilePosition end)
         {
+            
+
             BinaryHeap_Min<PathfindingPosition> frontier = new BinaryHeap_Min<PathfindingPosition>(15);
             resetGraph(graph);
 
             PathfindingPosition startPos = graph[start.xIndex, start.yIndex];
             PathfindingPosition endPos = graph[end.xIndex, end.yIndex];
+
+            if (!endPos.pathfindingEnabled)
+            {
+                if (TileManager.getTile(endPos.xIndex, endPos.yIndex).Model != EntityManager.activePlayer)
+                    return new TilePosition[0];
+                else
+                    endPos.pathfindingEnabled = true;
+            }
 
             frontier.Enqueue(startPos, 0);
             PathfindingPosition workingTile = null;
@@ -203,13 +213,12 @@
             public PathfindingPosition cameFrom;
             public bool visited, pathfindingEnabled;
 
-            public PathfindingPosition(int x, int y, bool enabled)
+            public PathfindingPosition(int x, int y)
             {
                 xIndex = x;
                 yIndex = y;
                 cameFrom = null;
                 visited = false;
-                pathfindingEnabled = enabled;
             }
 
             public void reset()
@@ -217,6 +226,7 @@
                 cameFrom = null;
                 costSoFar = 0;
                 visited = false;
+                pathfindingEnabled = TileManager.getTile(xIndex, yIndex).getPathFindingEnabled();
             }
 
             public override string ToString()

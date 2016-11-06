@@ -41,6 +41,8 @@
             _view = GetComponent<EntityView>();
 
             EntitySpawnEvent(this);
+
+            TileManager.getTile(new TilePosition(transform.position)).updateEntity(this);
         }
 
         void OnEnable()
