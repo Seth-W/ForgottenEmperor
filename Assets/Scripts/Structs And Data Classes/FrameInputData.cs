@@ -33,10 +33,10 @@
         */
         private bool getInPlayableArea()
         {
-            bool leftBounded = mousePositionWorld.x < -DataManager.Width / 2;
-            bool rightBounded = mousePositionWorld.x > DataManager.Width / 2;
-            bool lowerBounded = mousePositionWorld.y < -DataManager.Height / 2;
-            bool upperBounded = mousePositionWorld.y > DataManager.Height / 2;
+            bool leftBounded = mousePositionWorld.x < -DataManager.Width / 2 - 0.5f;
+            bool rightBounded = mousePositionWorld.x > DataManager.Width / 2 + 0.5f;
+            bool lowerBounded = mousePositionWorld.y < -DataManager.Height / 2 - 0.5f;
+            bool upperBounded = mousePositionWorld.y > DataManager.Height / 2 + 0.5f;
 
             return !(leftBounded || rightBounded || lowerBounded || upperBounded);
         }
