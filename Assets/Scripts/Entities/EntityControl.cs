@@ -63,9 +63,12 @@
             if (model.isMoving && !isActionQueued)
             {
                 pathingWaypoints = Pathfinder.findPath(startPos, endPos).ToVector3Array();
-                pathingWaypoints[0] = transform.position;
-                if(pathingWaypoints.Length > 1)
-                    pathingInterpolator = 1 - (Vector3.Distance(pathingWaypoints[0], pathingWaypoints[1]));
+                if (pathingWaypoints.Length > 0)
+                {
+                    pathingWaypoints[0] = transform.position;
+                    if (pathingWaypoints.Length > 1)
+                        pathingInterpolator = 1 - (Vector3.Distance(pathingWaypoints[0], pathingWaypoints[1]));
+                }
             }
             else
             {
