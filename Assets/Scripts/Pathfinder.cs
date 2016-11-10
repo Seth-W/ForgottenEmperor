@@ -104,8 +104,11 @@
                 if (nextTile.pathfindingEnabled)
                 {
                     int newCost = workingTile.costSoFar + 1;
+                    if (workingTile.currentPathDirection == TileDirections.North)
+                        newCost -= 1;
                     if (!nextTile.visited || newCost < nextTile.costSoFar)
                     {
+                        nextTile.currentPathDirection = TileDirections.North;
                         nextTile.cameFrom = workingTile;
                         nextTile.costSoFar = newCost;
                         int priority = newCost + heuristicDistance(nextTile.xIndex, nextTile.yIndex, endTile.xIndex, endTile.yIndex);
@@ -124,8 +127,11 @@
                 if (nextTile.pathfindingEnabled)
                 {
                     int newCost = workingTile.costSoFar + 1;
+                    if (workingTile.currentPathDirection == TileDirections.East)
+                        newCost -= 1;
                     if (!nextTile.visited || newCost < nextTile.costSoFar)
                     {
+                        nextTile.currentPathDirection = TileDirections.East;
                         nextTile.cameFrom = workingTile;
                         nextTile.costSoFar = newCost;
                         int priority = newCost + heuristicDistance(nextTile.xIndex, nextTile.yIndex, endTile.xIndex, endTile.yIndex);
@@ -144,6 +150,8 @@
                 if (nextTile.pathfindingEnabled)
                 {
                     int newCost = workingTile.costSoFar + 1;
+                    if (workingTile.currentPathDirection == TileDirections.West)
+                        newCost -= 1;
                     if (!nextTile.visited || newCost < nextTile.costSoFar)
                     {
                         nextTile.cameFrom = workingTile;
@@ -164,8 +172,11 @@
                 if (nextTile.pathfindingEnabled)
                 {
                     int newCost = workingTile.costSoFar + 1;
+                    if (workingTile.currentPathDirection == TileDirections.South)
+                        newCost -= 1;
                     if (!nextTile.visited || newCost < nextTile.costSoFar)
                     {
+                        nextTile.currentPathDirection = TileDirections.South;
                         nextTile.cameFrom = workingTile;
                         nextTile.costSoFar = newCost;
                         int priority = newCost + heuristicDistance(nextTile.xIndex, nextTile.yIndex, endTile.xIndex, endTile.yIndex);
@@ -212,6 +223,7 @@
             public int xIndex, yIndex, costSoFar;
             public PathfindingPosition cameFrom;
             public bool visited, pathfindingEnabled;
+            public TileDirections currentPathDirection;
 
             public PathfindingPosition(int x, int y)
             {
@@ -219,6 +231,7 @@
                 yIndex = y;
                 cameFrom = null;
                 visited = false;
+                currentPathDirection = TileDirections.Unassigned;
             }
 
             public void reset()
@@ -227,6 +240,7 @@
                 costSoFar = 0;
                 visited = false;
                 pathfindingEnabled = TileManager.getTile(xIndex, yIndex).getPathFindingEnabled();
+                currentPathDirection = TileDirections.Unassigned;
             }
 
             public override string ToString()
@@ -234,5 +248,10 @@
                 return xIndex.ToString() + "," + yIndex.ToString();
             }
         }
+    }
+
+    enum TileDirections
+    {
+        North, South, East, West, Unassigned
     }
 }

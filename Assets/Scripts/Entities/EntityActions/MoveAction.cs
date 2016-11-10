@@ -13,6 +13,8 @@
 
         bool firstExecute;
 
+        public bool isNullAction { get { return pathingWaypoints.Length <= 1; } }
+
         public MoveAction(Vector3[] waypoint, float interpolator, Transform entityToMove, EntityModel entityModel)
         {
             pathingIndex = 0;
@@ -29,11 +31,14 @@
             {
                 model.isMoving = true;
                 firstExecute = false;
-                TileModel firstTile = TileManager.getTile(new TilePosition(pathingWaypoints[1]));
-                if (firstTile.getPathFindingEnabled())
-                    firstTile.updateEntity(model);
-                else
-                    correctForBlockedPath();
+                if (pathingWaypoints.Length > 1)
+                {
+                    TileModel firstTile = TileManager.getTile(new TilePosition(pathingWaypoints[1]));
+                    if (firstTile.getPathFindingEnabled())
+                        firstTile.updateEntity(model);
+                    else
+                        correctForBlockedPath();
+                }
             }
 
             if (pathingIndex >= pathingWaypoints.Length - 1)

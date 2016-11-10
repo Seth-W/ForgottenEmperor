@@ -47,7 +47,11 @@
             if (queueAction)
                 model.enqueueAction(getMoveAction(currentFullPathEndPos, destination, true));
             else
-                model.runAction(getMoveAction(new TilePosition(transform.position), destination, false));
+            {
+                MoveAction moveAction = getMoveAction(new TilePosition(transform.position), destination, false);
+                //if(!moveAction.isNullAction)
+                    model.runAction(moveAction);
+            }
         }
 
         /**
@@ -55,7 +59,7 @@
         *Creates a <see cref="MoveAction"/> for the current entity from a starting <see cref="TilePosition"/> to another <see cref="TilePosition"/>
         *</summary>
         */
-        private IAction getMoveAction(TilePosition startPos, TilePosition endPos, bool isActionQueued)
+        private MoveAction getMoveAction(TilePosition startPos, TilePosition endPos, bool isActionQueued)
         {
             float pathingInterpolator = 0;
             Vector3[] pathingWaypoints;
