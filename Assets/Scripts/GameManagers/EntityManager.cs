@@ -2,13 +2,20 @@
 {
     using UnityEngine;
     using System.Collections.Generic;
+    using System;
 
     class EntityManager : MonoBehaviour
     {
+        public delegate void ActiveEntityUpdate(EntityModel activeEntity);
+        public static ActiveEntityUpdate ActiveEntityUpdateEvent;
+
         int _activePlayerIndex = 0;
+        int _activeAbilityIndex = 0;
         List<EntityModel> _playerEntities;
         static List<EntityModel> playerEntities;
-        static int activePlayerIndex = 0; 
+        static int activePlayerIndex = 0;
+        static int activeAbilityIndex = 0;
+        public static int currentAbilityIndex { get { return activePlayerIndex * 4 + activeAbilityIndex; } }
 
         public static EntityModel activePlayer { get { return playerEntities[activePlayerIndex]; } }
 
@@ -20,6 +27,7 @@
         {
             EntityModel.EntitySpawnEvent += OnEntitySpawn;
             CharacterSelectButton.CharacterSelectButtonClickEvent += OnCharacterSelectButtonClick;
+            AbilitySelectButton.AbilitySelectButtonClickEvent += OnAbilitySelectButtonClick;
             InputManager.FrameInputEvent += OnFrameInput;
         }
 
@@ -27,9 +35,11 @@
         {
             EntityModel.EntitySpawnEvent -= OnEntitySpawn;
             CharacterSelectButton.CharacterSelectButtonClickEvent -= OnCharacterSelectButtonClick;
+            AbilitySelectButton.AbilitySelectButtonClickEvent -= OnAbilitySelectButtonClick;
             InputManager.FrameInputEvent -= OnFrameInput;
         }
 
+        
         void Start()
         {
             _playerEntities = new List<EntityModel>();
@@ -39,7 +49,7 @@
             {
                 if (_playerEntities.Count > 0)
                 {
-                    UpdateActiveIndex(0);
+                    UpdateActivePlayerIndex(0);
                 }
             }
         }
@@ -55,7 +65,8 @@
         {
             if (_playerEntities == null)
                 _playerEntities = new List<EntityModel>();
-            _playerEntities.Add(model);
+            if(model.type == EntityType.Player)
+                _playerEntities.Add(model);
         }
 
         /**
@@ -63,18 +74,27 @@
         *Updates the index of the active entity
         *</summary>
         */
-        private void UpdateActiveIndex(int playerIndex)
+        private void UpdateActivePlayerIndex(int playerIndex)
         {
             _activePlayerIndex = playerIndex;
             activePlayerIndex = playerIndex;
             pathfindingDebugObj.parent = _playerEntities[_activePlayerIndex].transform;
             pathfindingDebugObj.localPosition = Vector3.zero;
+            ActiveEntityUpdateEvent(activePlayer);
         }
 
         private void OnCharacterSelectButtonClick(int playerIndex)
         {
-            UpdateActiveIndex(playerIndex);
+            UpdateActivePlayerIndex(playerIndex);
         }
+
+        private void OnAbilitySelectButtonClick(int character, int button)
+        {
+            UpdateActivePlayerIndex(character);
+            _activeAbilityIndex = button;
+            activeAbilityIndex = button;
+        }
+
 
         /**
         *<summary>

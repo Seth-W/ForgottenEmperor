@@ -4,5 +4,6 @@
     {
         bool execute();
         bool revert();
+        bool cancel();
     }
 }

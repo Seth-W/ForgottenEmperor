@@ -2,6 +2,7 @@
 {
     using UnityEngine;
     using MethodExtensions;
+    using System;
 
     class MoveAction : IAction
     {
@@ -11,7 +12,7 @@
         Transform entityTransform;
         EntityModel model;
 
-        bool firstExecute;
+        bool firstExecute, cancelFirstCall;
 
         public bool isNullAction { get { return pathingWaypoints.Length <= 1; } }
 
@@ -23,6 +24,7 @@
             entityTransform = entityToMove;
             model = entityModel;
             firstExecute = true;
+            cancelFirstCall = true;
         }
 
         public bool execute()
@@ -75,6 +77,28 @@
             return true;
         }
 
+        public bool cancel()
+        {
+            if (cancelFirstCall)
+            {
+                cancelFirstCall = false;
+                pathingWaypoints = Pathfinder.findPath(new TilePosition(pathingWaypoints[pathingIndex]), new TilePosition(pathingWaypoints[pathingIndex + 1])).ToVector3Array();
+                pathingIndex = 0;
+                pathingInterpolator = getAdjustedInterpolator(pathingIndex);
+            }
+            if(pathingInterpolator < 1f)
+            {
+                entityTransform.position = Vector3.Lerp(pathingWaypoints[pathingIndex], pathingWaypoints[pathingIndex + 1], pathingInterpolator);
+                pathingInterpolator += Time.deltaTime * 10 * model.speed;
+                return false;
+            }
+            model.isMoving = false;
+            entityTransform.position = pathingWaypoints[1];
+            TileManager.getTile(new TilePosition(pathingWaypoints[0])).updateEntity(null);
+            TileManager.getTile(new TilePosition(pathingWaypoints[1])).updateEntity(null);
+            return true;
+        }
+
         /**
         *<summary>
         *Updates the fields for interpolating along waypoints when an entity has reached the end of a path between two tiles
@@ -95,6 +119,23 @@
             pathingIndex = 0;
             TileManager.getTile(new TilePosition(pathingWaypoints[0])).updateEntity(model);
             TileManager.getTile(new TilePosition(pathingWaypoints[1])).updateEntity(model);
+        }
+
+        private float getAdjustedInterpolator(int index)
+        {
+            float retValue = 0;
+            Vector3 entityPos = model.transform.position;
+            if (pathingWaypoints.Length > index + 1)
+            {
+                retValue = Mathf.Abs(entityPos.y - pathingWaypoints[index + 1].y);
+                retValue += Mathf.Abs(entityPos.x - pathingWaypoints[index + 1].x);
+            }
+            else
+            {
+                retValue = 0f;
+            }
+
+            return 1 - retValue;
         }
     }
 }

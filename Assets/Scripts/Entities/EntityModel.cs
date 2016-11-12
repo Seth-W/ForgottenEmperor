@@ -13,6 +13,10 @@
         float _speed;
         public float speed { get { return _speed; } }
 
+        [SerializeField]
+        EntityType _type;
+        public EntityType type { get { return _type; } }
+
         TilePosition _tilePos;
         TilePosition tilePos { get { return _tilePos; } }
 
@@ -27,6 +31,7 @@
             get { return _isMoving; }
             set { _isMoving = value; }
         }
+        bool cancellingAction;
         public bool queuedActions { get { return actionQueue.Count > 0; } }
 
         Queue<IAction> actionQueue;
@@ -65,9 +70,19 @@
         {
             if(currentAction != null)
             {
-                while(currentAction.execute() && actionQueue.Count > 0)
+                if (cancellingAction)
                 {
-                    currentAction = actionQueue.Dequeue();
+                    cancellingAction = !currentAction.cancel();
+                    if (!cancellingAction)
+                        currentAction = actionQueue.Dequeue();
+                }
+                else
+                {
+                    bool dequeue = currentAction.execute();
+                    if (dequeue && actionQueue.Count > 0)
+                        currentAction = actionQueue.Dequeue();
+                    else if (dequeue)
+                        currentAction = null;
                 }
             }
             else
@@ -95,7 +110,9 @@
         public void runAction(IAction action)
         {
             actionQueue.Clear();
-            currentAction = action;
+            actionQueue.Enqueue(action);
+            //currentAction = action;
+            cancellingAction = currentAction != null;
         }
     }
 }

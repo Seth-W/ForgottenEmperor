@@ -32,8 +32,30 @@
         {
             if (data.mouseData.mouse0Down && data.inPlayableArea)
             {
-                Move(data.tilePos, Input.GetKey(KeyCode.LeftShift));
+                EntityModel model = TileManager.getTile(data.tilePos).Model;
+                if (model == null)
+                    Move(data.tilePos, Input.GetKey(KeyCode.LeftShift));
+                else if (model.type == EntityType.Player)
+                    castFriendlyAction(Input.GetKey(KeyCode.LeftShift));
+                else if (model.type == EntityType.Enemy)
+                    castEnemyAction(Input.GetKey(KeyCode.LeftShift));
             }
+        }
+
+        private void castEnemyAction(bool queueAction)
+        {
+            if (queueAction)
+                model.enqueueAction(new DebugMessageAction("Casting an enemy action"));
+            else
+                model.runAction(new DebugMessageAction("Casting an enemy action"));
+        }
+
+        private void castFriendlyAction(bool queueAction)
+        {
+            if (queueAction)
+                model.enqueueAction(new DebugMessageAction("Casting a friendly action"));
+            else
+                model.runAction(new DebugMessageAction("Casting a friendly action"));
         }
 
         /**
@@ -49,7 +71,7 @@
             else
             {
                 MoveAction moveAction = getMoveAction(new TilePosition(transform.position), destination, false);
-                //if(!moveAction.isNullAction)
+                if(!moveAction.isNullAction)
                     model.runAction(moveAction);
             }
         }
