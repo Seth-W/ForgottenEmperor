@@ -100,6 +100,7 @@
 
             int tileCount = Mathf.Abs(relativeEndPos.xIndex) > Mathf.Abs(relativeEndPos.yIndex) ? relativeEndPos.xIndex : relativeEndPos.yIndex;
             tileCount = Mathf.Abs(tileCount);
+            tileCount++;
 
             Vector3[] vertices = new Vector3[tileCount * 6];
             int[] triangles = new int[tileCount * 6];
@@ -147,6 +148,9 @@
             int yEnd = Mathf.Abs(relativeEnd.yIndex);
 
             int slope = xEnd == 0 ? 0 : yEnd / xEnd;
+
+            xEnd++;
+            yEnd++;
 
             if(xEnd > yEnd)
             {
