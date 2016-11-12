@@ -2,6 +2,7 @@
 {
     using UnityEngine;
 
+    [System.Serializable]
     public struct TilePosition
     {
         public Vector3 tilePosition;
@@ -63,6 +64,16 @@
         public static bool operator != (TilePosition posA, TilePosition posB)
         {
             return !(posA.Equals(posB));
+        }
+
+        public static TilePosition operator - (TilePosition posA, TilePosition posB)
+        {
+            return new TilePosition(posA.xIndex - posB.xIndex, posA.yIndex - posB.yIndex);
+        }
+
+        public static TilePosition operator + (TilePosition posA, TilePosition posB)
+        {
+            return new TilePosition(posA.xIndex + posB.xIndex, posA.yIndex + posB.yIndex);
         }
     }
 }

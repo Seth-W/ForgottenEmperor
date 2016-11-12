@@ -1,0 +1,7 @@
+﻿namespace CFE
+{
+    interface IEntity
+    {
+        
+    }
+}

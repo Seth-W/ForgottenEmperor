@@ -5,21 +5,24 @@
     class DebugDisplayManager : MonoBehaviour
     {
         [SerializeField]
-        bool heuristicDisplayed, indexDisplayed;
-        bool _heuristicDisplayed, _indexDisplayed;
+        bool heuristicDisplayed, indexDisplayed, entityDisplayed;
+        bool _heuristicDisplayed, _indexDisplayed, _entityDisplayed;
 
         [SerializeField]
-        GameObject tileIndexDebugDisplayPrefab, tileHeuristicDisplayPrefab;
+        GameObject tileIndexDebugDisplayPrefab, tileHeuristicDisplayPrefab, tileEntityDisplayPrefab;
         IDebugDisplay[,] heuristicDisplays;
         IDebugDisplay[,] indexDisplays;
+        IDebugDisplay[,] entityDisplays;
 
         void Start()
         {
             heuristicDisplays = new DebugTileHeuristicDisplay[DataManager.Width, DataManager.Height];
             indexDisplays = new DebugTileIndexDisplay[DataManager.Width, DataManager.Height];
+            entityDisplays = new DebugTileEntityDisplay[DataManager.Width, DataManager.Height];
 
             _heuristicDisplayed = true;
             _indexDisplayed = true;
+            _entityDisplayed = true;
 
 
             for (int i = 0; i < DataManager.Width; i++)
@@ -27,13 +30,18 @@
                 for (int j = 0; j < DataManager.Height; j++)
                 {
                     GameObject temp;
-                    temp = Instantiate(tileIndexDebugDisplayPrefab, new TilePosition(i, j).tilePosition, Quaternion.identity) as GameObject;
+                    TilePosition tilePos = new TilePosition(i, j);
+                    temp = Instantiate(tileIndexDebugDisplayPrefab, tilePos.tilePosition, Quaternion.identity) as GameObject;
                     temp.transform.parent = transform;
                     indexDisplays[i, j] = temp.GetComponent<DebugTileIndexDisplay>();
 
-                    temp = Instantiate(tileHeuristicDisplayPrefab, new TilePosition(i, j).tilePosition, Quaternion.identity) as GameObject;
+                    temp = Instantiate(tileHeuristicDisplayPrefab, tilePos.tilePosition, Quaternion.identity) as GameObject;
                     temp.transform.parent = transform;
                     heuristicDisplays[i, j] = temp.GetComponent<DebugTileHeuristicDisplay>();
+
+                    temp = Instantiate(tileEntityDisplayPrefab, tilePos.tilePosition, Quaternion.identity) as GameObject;
+                    temp.transform.parent = transform;
+                    entityDisplays[i, j] = temp.GetComponent<DebugTileEntityDisplay>();
                 }
             }
         }
@@ -49,6 +57,11 @@
             {
                 setDebugActive(indexDisplays, indexDisplayed);
                 _indexDisplayed = indexDisplayed;
+            }
+            if(entityDisplayed != _entityDisplayed)
+            {
+                setDebugActive(entityDisplays, entityDisplayed);
+                _entityDisplayed = entityDisplayed;
             }
         }
 

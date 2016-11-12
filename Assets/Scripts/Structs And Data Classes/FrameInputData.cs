@@ -10,7 +10,7 @@
         MouseInputData _mouseData;
         public MouseInputData mouseData { get { return _mouseData; } }
 
-        public TilePosition tilePos;
+        public TilePosition tilePos, activeEntityTilePos;
 
         public bool isPaused, inPlayableArea;
 
@@ -21,6 +21,7 @@
             mousePositionScreen = screenPos;
             mousePositionWorld = Camera.main.ScreenToWorldPoint(screenPos);
             tilePos = new TilePosition(mousePositionWorld);
+            activeEntityTilePos = new TilePosition(EntityManager.activePlayer.transform.position);
             isPaused = paused;
             inPlayableArea = getInPlayableArea();
         }
