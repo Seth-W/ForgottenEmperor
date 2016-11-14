@@ -3,7 +3,7 @@
     using UnityEngine;
     using MethodExtensions;
     using Actions.EntityActions;
-
+    using System;
 
     class EntityControl : MonoBehaviour
     {
@@ -38,16 +38,22 @@
                 else if (model.type == EntityType.Player)
                     castFriendlyAction(Input.GetKey(KeyCode.LeftShift));
                 else if (model.type == EntityType.Enemy)
-                    castEnemyAction(Input.GetKey(KeyCode.LeftShift));
+                    meleeAttack(data.tilePos, Input.GetKey(KeyCode.LeftShift)) ;
             }
         }
 
-        private void castEnemyAction(bool queueAction)
+        private void castAbility(bool queueAction, TilePosition target)
         {
             if (queueAction)
+            {
+                model.enqueueAction(new MoveAction(transform, model, target, AbilityManager.activeAbility.range));
                 model.enqueueAction(new DebugMessageAction("Casting an enemy action"));
+            }
             else
-                model.runAction(new DebugMessageAction("Casting an enemy action"));
+            {
+                model.runAction(new MoveAction(transform, model, target, AbilityManager.activeAbility.range));
+                model.enqueueAction(new DebugMessageAction("Casting an enemy action"));
+            }
         }
 
         private void castFriendlyAction(bool queueAction)
@@ -67,42 +73,28 @@
         private void Move(TilePosition destination, bool queueAction)
         {
             if (queueAction)
-                model.enqueueAction(getMoveAction(currentFullPathEndPos, destination, true));
+                model.enqueueAction(new MoveAction(transform, model, destination));
+            else
+                model.runAction(new MoveAction(transform, model, destination));
+        }
+
+        private void meleeAttack(TilePosition target, bool queueAction)
+        {
+            if (queueAction)
+            {
+                model.enqueueAction(new MoveAction(transform, model, target, 1));
+                model.enqueueAction(new DebugMessageAction("Casting an enemy action"));
+            }
             else
             {
-                MoveAction moveAction = getMoveAction(new TilePosition(transform.position), destination, false);
-                if(!moveAction.isNullAction)
-                    model.runAction(moveAction);
+                model.runAction(new MoveAction(transform, model, target, 1));
+                model.enqueueAction(new DebugMessageAction("Casting an enemy action"));
             }
         }
 
-        /**
-        *<summary>
-        *Creates a <see cref="MoveAction"/> for the current entity from a starting <see cref="TilePosition"/> to another <see cref="TilePosition"/>
-        *</summary>
-        */
-        private MoveAction getMoveAction(TilePosition startPos, TilePosition endPos, bool isActionQueued)
+        public void setCurrentFullPathEndPos(TilePosition endPos)
         {
-            float pathingInterpolator = 0;
-            Vector3[] pathingWaypoints;
-
-            if (model.isMoving && !isActionQueued)
-            {
-                pathingWaypoints = Pathfinder.findPath(startPos, endPos).ToVector3Array();
-                if (pathingWaypoints.Length > 0)
-                {
-                    pathingWaypoints[0] = transform.position;
-                    if (pathingWaypoints.Length > 1)
-                        pathingInterpolator = 1 - (Vector3.Distance(pathingWaypoints[0], pathingWaypoints[1]));
-                }
-            }
-            else
-            {
-                pathingWaypoints = Pathfinder.findPath(startPos, endPos).ToVector3Array();
-                pathingInterpolator = 0f;
-            }
             currentFullPathEndPos = endPos;
-            return new MoveAction(pathingWaypoints, pathingInterpolator, transform, model);
         }
     }
 }

@@ -2,6 +2,7 @@
 {
     using UnityEngine;
     using System.Collections.Generic;
+    using CFE.Actions.EntityActions;
 
     class EntityModel : MonoBehaviour
     {
@@ -25,17 +26,21 @@
         EntityView _view;
         public EntityView view { get { return _view; } }
 
-        bool _isMoving;
         public bool isMoving
         {
-            get { return _isMoving; }
-            set { _isMoving = value; }
+            get
+            {
+                if (currentAction != null)
+                    return currentAction.GetType() == typeof(MoveAction);
+                else
+                    return false;
+            }
         }
         bool cancellingAction;
         public bool queuedActions { get { return actionQueue.Count > 0; } }
 
         Queue<IAction> actionQueue;
-        IAction currentAction;
+        public IAction currentAction;
         
         #region MonoBehaviours
         void Start()

@@ -87,6 +87,40 @@
             return backTracePath(workingTile);
         }
 
+        /**
+        *<summary>
+        *Use to find path for actions against occupied tiles
+        *</summary>
+        */
+        public static TilePosition[] findPathIgnoreEndTilePathfindingEnabled(TilePosition start, TilePosition end)
+        {
+
+
+            BinaryHeap_Min<PathfindingPosition> frontier = new BinaryHeap_Min<PathfindingPosition>(15);
+            resetGraph(graph);
+
+            PathfindingPosition startPos = graph[start.xIndex, start.yIndex];
+            PathfindingPosition endPos = graph[end.xIndex, end.yIndex];
+
+            endPos.pathfindingEnabled = true;
+
+            frontier.Enqueue(startPos, 0);
+            PathfindingPosition workingTile = null;
+
+            while (!frontier.isEmpty)
+            {
+                workingTile = frontier.Dequeue();
+                workingTile.visited = true;
+
+                if (workingTile.xIndex == end.xIndex && workingTile.yIndex == end.yIndex)
+                    return backTracePath(workingTile);
+
+                enqueueNeighbors(frontier, workingTile, endPos);
+            }
+
+            return backTracePath(workingTile);
+        }
+
         private static void enqueueNeighbors(BinaryHeap_Min<PathfindingPosition> frontier, PathfindingPosition workingTile, PathfindingPosition endTile)
         {
             enqueueEastNeighbor(frontier, workingTile, endTile);

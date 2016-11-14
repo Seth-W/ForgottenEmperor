@@ -5,6 +5,8 @@
     [System.Serializable]
     public struct TilePosition
     {
+        public static TilePosition nullTPos = new TilePosition(int.MinValue, int.MinValue);
+
         public Vector3 tilePosition;
         public int xIndex, yIndex;
 

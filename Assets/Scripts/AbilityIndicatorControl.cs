@@ -10,53 +10,50 @@
         int _radius;
         int radius;
 
-        bool _followMouse;
-        public bool followMouse
-        {
-            get { return _followMouse; }
-            set { _followMouse = value; }
-        }
+        AbilityAOE_Type aoeType;
 
         #region MonoBehaviours
         void Start()
         {
             mesh = GetComponent<MeshFilter>().mesh;
+            aoeType = AbilityAOE_Type.SingleTile;
 
             //setRadialIndicator(_radius);
-            setLinearIndicator(new TilePosition(0, 0), new TilePosition(9, -2));
+            //setLinearIndicator(new TilePosition(0, 0), new TilePosition(9, -2));
         }
         
         void OnEnable()
         {
             InputManager.FrameInputEvent += OnFrameInputEvent;
-            EntityManager.ActiveEntityUpdateEvent += OnActiveEntityUpdateEvent;
         }
 
         void OnDisable()
         {
             InputManager.FrameInputEvent -= OnFrameInputEvent;
-            EntityManager.ActiveEntityUpdateEvent -= OnActiveEntityUpdateEvent;
         }
 
         void Update()
         {
-            if(radius != _radius)
-            {
-                radius = _radius;
-                setRadialIndicator(_radius);
-            }
+
         }
         #endregion
 
-        public void setIndicator(AbilityBehaviorData data, Transform startPos, TilePosition tilePos)
+        public void setIndicator(AbilityBehaviorData data)
         {
+            aoeType = data.AoEType;
             if (data.AoEType == AbilityAOE_Type.Radial)
             {
-                setRadialIndicator(data.radius);
-                transform.parent.parent = startPos;
-                transform.parent.localPosition = new Vector3(0, 0, -0.1f);
-                _followMouse = true;
+                radius = data.radius;
+                _radius = radius;
+                setRadialIndicator(radius);
+                Debug.Log("Setting radial indicator");
+                return;
             }
+            else if(aoeType == AbilityAOE_Type.Linear)
+            {
+                Debug.Log("Setting linear indicator");
+            }
+            setParent();
         }
 
         #region Event Responders
@@ -64,15 +61,36 @@
         {
             //if (_followMouse)
             //    transform.position = data.tilePos.tilePosition;
-            setLinearIndicator(data.activeEntityTilePos, data.tilePos);
+            //setLinearIndicator(data.activeEntityTilePos, data.tilePos);
+            if(aoeType == AbilityAOE_Type.Radial)
+            {
+                transform.parent.position = data.tilePos.tilePosition;
+            }
+            else if (aoeType == AbilityAOE_Type.Linear)
+            {
+
+                setLinearIndicator(data.activeEntityTilePos, data.tilePos);
+            }
         }
 
-        private void OnActiveEntityUpdateEvent(EntityModel activeEntity)
-        {
-            transform.parent.parent = activeEntity.transform;
-            transform.parent.localPosition = new Vector3(0, 0, -0.1f);
-        }
         #endregion
+
+
+        private void setParent()
+        {
+            if (aoeType == AbilityAOE_Type.Radial)
+            {
+                transform.parent.parent = null;
+                transform.parent.position = new Vector3(0, 0, -0.1f);
+                transform.eulerAngles = Vector3.zero;
+            }
+            else if (aoeType == AbilityAOE_Type.Linear)
+            {
+                transform.parent.parent = EntityManager.activePlayer.transform;
+                transform.parent.localPosition = Vector3.zero;
+                transform.parent.Translate(new Vector3(0, 0, -0.1f));
+            }
+        }
 
         private void setRadialIndicator(int radius)
         {

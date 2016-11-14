@@ -3,8 +3,10 @@
     using UnityEngine;
     using System.Collections;
 
-    class AbilityIndicatorManager : MonoBehaviour
+    class AbilityManager : MonoBehaviour
     {
+        public static AbilityBehaviorData activeAbility;
+
         [SerializeField]
         AbilityIndicatorControl spellIndicator;
 
@@ -32,9 +34,11 @@
 
         private void OnAbilitySelectButtonClickEvent(int character, int ability)
         {
+            Debug.Log(character + "," + ability);
             activeIndex = 4 * character + ability;
             spellIndicator.enabled = true;
-            //spellIndicator.setIndicator(AbilityBehavior[4 * character + ability], EntityManager.activePlayer.transform, InputManager.currentFrameInputData.tilePos);
+            activeAbility = AbilityBehavior[activeIndex];
+            spellIndicator.setIndicator(activeAbility);
         }
     }
 }

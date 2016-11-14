@@ -80,7 +80,7 @@
             activePlayerIndex = playerIndex;
             pathfindingDebugObj.parent = _playerEntities[_activePlayerIndex].transform;
             pathfindingDebugObj.localPosition = Vector3.zero;
-            ActiveEntityUpdateEvent(activePlayer);
+            //ActiveEntityUpdateEvent(activePlayer);
         }
 
         private void OnCharacterSelectButtonClick(int playerIndex)

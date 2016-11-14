@@ -9,30 +9,67 @@
         int pathingIndex;
         float pathingInterpolator;
         Vector3[] pathingWaypoints;
+        int pathingStepsToSkip;
+
+        TilePosition endPos;
         Transform entityTransform;
         EntityModel model;
+
+        public TilePosition cancelPos
+        {
+            get
+            {
+                if (pathingIndex + 1 < pathingWaypoints.Length)
+                    return new TilePosition(pathingWaypoints[pathingIndex + 1]);
+                else
+                    return TilePosition.nullTPos;
+            }
+        }
 
         bool firstExecute, cancelFirstCall;
 
         public bool isNullAction { get { return pathingWaypoints.Length <= 1; } }
 
-        public MoveAction(Vector3[] waypoint, float interpolator, Transform entityToMove, EntityModel entityModel)
+        public MoveAction(Transform entityToMove, EntityModel entityModel, TilePosition endPos)
         {
             pathingIndex = 0;
-            pathingInterpolator = interpolator;
-            pathingWaypoints = waypoint;
+            pathingInterpolator = 0;
+            pathingStepsToSkip = 0;
+            pathingWaypoints = new Vector3[1];
+
             entityTransform = entityToMove;
             model = entityModel;
+            this.endPos = endPos;
+
             firstExecute = true;
             cancelFirstCall = true;
         }
+
+        public MoveAction(Transform entityToMove, EntityModel entityModel, TilePosition endPos, int stepsToSkip)
+        {
+            pathingIndex = 0;
+            pathingInterpolator = 0;
+            pathingStepsToSkip = stepsToSkip;
+
+            entityTransform = entityToMove;
+            model = entityModel;
+            this.endPos = endPos;
+
+            firstExecute = true;
+            cancelFirstCall = true;
+        }
+
 
         public bool execute()
         {
             if (firstExecute)
             {
-                model.isMoving = true;
+                Debug.Log("Starting a move action");
                 firstExecute = false;
+                if (pathingStepsToSkip == 0)
+                    pathingWaypoints = Pathfinder.findPath(new TilePosition(entityTransform.position), endPos).ToVector3Array();
+                else
+                    pathingWaypoints = Pathfinder.findPathIgnoreEndTilePathfindingEnabled(new TilePosition(entityTransform.position), endPos).ToVector3Array();
                 if (pathingWaypoints.Length > 1)
                 {
                     TileModel firstTile = TileManager.getTile(new TilePosition(pathingWaypoints[1]));
@@ -43,9 +80,8 @@
                 }
             }
 
-            if (pathingIndex >= pathingWaypoints.Length - 1)
+            if (pathingIndex >= pathingWaypoints.Length - (1 + pathingStepsToSkip))
             {
-                model.isMoving = false;
                 return true; 
             }
             if (pathingInterpolator < 1f)
@@ -85,17 +121,17 @@
                 pathingWaypoints = Pathfinder.findPath(new TilePosition(pathingWaypoints[pathingIndex]), new TilePosition(pathingWaypoints[pathingIndex + 1])).ToVector3Array();
                 pathingIndex = 0;
                 pathingInterpolator = getAdjustedInterpolator(pathingIndex);
+                TileManager.getTile(new TilePosition(pathingWaypoints[1])).updateEntity(model);
             }
-            if(pathingInterpolator < 1f)
+            if (pathingInterpolator < 1f)
             {
                 entityTransform.position = Vector3.Lerp(pathingWaypoints[pathingIndex], pathingWaypoints[pathingIndex + 1], pathingInterpolator);
                 pathingInterpolator += Time.deltaTime * 10 * model.speed;
                 return false;
             }
-            model.isMoving = false;
             entityTransform.position = pathingWaypoints[1];
+            model.control.setCurrentFullPathEndPos(new TilePosition(pathingWaypoints[1]));
             TileManager.getTile(new TilePosition(pathingWaypoints[0])).updateEntity(null);
-            TileManager.getTile(new TilePosition(pathingWaypoints[1])).updateEntity(null);
             return true;
         }
 
