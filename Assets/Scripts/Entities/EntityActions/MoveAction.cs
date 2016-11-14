@@ -1,7 +1,7 @@
 ﻿namespace CFE.Actions.EntityActions
 {
     using UnityEngine;
-    using MethodExtensions;
+    using Extensions;
     using System;
 
     class MoveAction : IAction
@@ -64,7 +64,6 @@
         {
             if (firstExecute)
             {
-                Debug.Log("Starting a move action");
                 firstExecute = false;
                 if (pathingStepsToSkip == 0)
                     pathingWaypoints = Pathfinder.findPath(new TilePosition(entityTransform.position), endPos).ToVector3Array();

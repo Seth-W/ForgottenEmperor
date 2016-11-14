@@ -1,6 +1,6 @@
 ﻿namespace CFE
 {
-    using System;
+    using Extensions;
     using UnityEngine;
 
     class AbilityIndicatorControl : MonoBehaviour
@@ -126,7 +126,8 @@
             int triangleIndex = 0;
             int vertexIndex = 0;
 
-            addLinearTiles(vertices, triangles, ref vertexIndex, ref triangleIndex, startPos, endPos);
+            //addLinearTiles(vertices, triangles, ref vertexIndex, ref triangleIndex, startPos, endPos);
+            addLinearTiles(vertices, triangles, ref vertexIndex, ref triangleIndex, new Vector2(startPos.xIndex, startPos.yIndex), new Vector2(endPos.xIndex, endPos.yIndex));
             mesh.vertices = vertices;
             mesh.triangles = triangles;
             mesh.RecalculateNormals();
@@ -205,6 +206,16 @@
                     transform.localEulerAngles = new Vector3(180, 0, 0);
                 else
                     transform.localEulerAngles = Vector3.zero;
+            }
+        }
+
+        private void addLinearTiles(Vector3[] array, int[] triangles, ref int index, ref int triangleIndex, Vector2 startPos, Vector2 endPos)
+        {
+            Vector2[] linePoints = Vector2Helper.getLine(startPos, endPos);
+
+            for (int i = 0; i < linePoints.Length; i++)
+            {
+                AddTile(array, triangles, ref index, ref triangleIndex, (int)linePoints[i].x, (int)linePoints[i].y);
             }
         }
 

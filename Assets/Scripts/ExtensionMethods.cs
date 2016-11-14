@@ -1,16 +1,17 @@
-﻿namespace CFE.MethodExtensions
+﻿namespace CFE.Extensions
 {
+    using UnityEngine;
+
     public static class ExtensionMethods
     {
-
         /**
         *<summary>
-        *Unzips an array of <see cref="UnityEngine.Vector3"/> from an array of <see cref="TilePosition"/>
+        *Unzips an array of <see cref="Vector3"/> from an array of <see cref="TilePosition"/>
         *</summary>
         */
-        public static UnityEngine.Vector3[] ToVector3Array(this TilePosition[] array)
+        public static Vector3[] ToVector3Array(this TilePosition[] array)
         {
-            UnityEngine.Vector3[] retValue = new UnityEngine.Vector3[array.Length];
+            Vector3[] retValue = new Vector3[array.Length];
 
             for (int i = 0; i < array.Length; i++)
             {
@@ -19,5 +20,24 @@
 
             return retValue;
         }
+
+        /**
+        *<summary>
+        *Converts an array of <see cref="Vector2"/> into an array of <see cref="TilePosition"/>
+        *</summary>
+        */
+        public static TilePosition[] convertToTilePosition(this Vector2[] positions)
+        {
+            TilePosition[] retValue = new TilePosition[positions.Length];
+
+            for (int i = 0; i < positions.Length; i++)
+            {
+                retValue[i] = new TilePosition (positions[i]);
+            }
+
+            return retValue;
+        }
+
+
     }
 }

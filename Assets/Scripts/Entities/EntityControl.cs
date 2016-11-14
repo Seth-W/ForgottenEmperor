@@ -1,7 +1,7 @@
 ﻿namespace CFE
 {
     using UnityEngine;
-    using MethodExtensions;
+    using Extensions;
     using Actions.EntityActions;
     using System;
 
