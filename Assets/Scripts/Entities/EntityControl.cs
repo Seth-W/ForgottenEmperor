@@ -30,29 +30,52 @@
 
         public void OnFrameInput(FrameInputData data)
         {
-            if (data.mouseData.mouse0Down && data.inPlayableArea)
+            if (data.mouseData.mouse1Down && data.inPlayableArea)
             {
-                EntityModel model = TileManager.getTile(data.tilePos).Model;
-                if (model == null)
-                    Move(data.tilePos, Input.GetKey(KeyCode.LeftShift));
-                else if (model.type == EntityType.Player)
-                    castFriendlyAction(Input.GetKey(KeyCode.LeftShift));
-                else if (model.type == EntityType.Enemy)
-                    meleeAttack(data.tilePos, Input.GetKey(KeyCode.LeftShift)) ;
+                Move(data.tilePos, Input.GetKey(KeyCode.LeftShift));
+            }
+            
+            else if(data.mouseData.mouse0Down && data.inPlayableArea)
+            {
+                if (abilityTargetMatch(data.tilePos, AbilityManager.activeAbility.targetType))
+                    castAbility(data.tilePos, AbilityManager.activeAbility, Input.GetKey(KeyCode.LeftShift));
             }
         }
 
-        private void castAbility(bool queueAction, TilePosition target)
+        /**
+        *<summary>
+        *Checks the ability targeting type against what is on the tile. Returns true if the ability can be cast
+        *</summary>
+        */
+        private bool abilityTargetMatch(TilePosition target, AbilityTargetingType abilityType)
+        {
+            if(abilityType == AbilityTargetingType.Ground)
+                return true;
+            EntityModel entity = TileManager.getTile(target).Model;
+            if (entity != null)
+            {
+                Debug.Log("Checkign against entity on tile");
+                if (abilityType == AbilityTargetingType.Allies)
+                    return entity.type == EntityType.Player;
+                else if (abilityType == AbilityTargetingType.Enemies)
+                    return entity.type == EntityType.Enemy;
+                else if (abilityType == AbilityTargetingType.Both)
+                    return true;
+            }
+            return false;  
+        }
+
+        private void castAbility(TilePosition target, AbilityBehaviorData abilityData, bool queueAction)
         {
             if (queueAction)
             {
-                model.enqueueAction(new MoveAction(transform, model, target, AbilityManager.activeAbility.range));
-                model.enqueueAction(new DebugMessageAction("Casting an enemy action"));
+                model.enqueueAction(new MoveAction(transform, model, target, abilityData.range));
+                model.enqueueAction(new DebugMessageAction("Casting an action"));
             }
             else
             {
-                model.runAction(new MoveAction(transform, model, target, AbilityManager.activeAbility.range));
-                model.enqueueAction(new DebugMessageAction("Casting an enemy action"));
+                model.runAction(new MoveAction(transform, model, target, abilityData.range));
+                model.enqueueAction(new DebugMessageAction("Casting an action"));
             }
         }
 
@@ -76,20 +99,6 @@
                 model.enqueueAction(new MoveAction(transform, model, destination));
             else
                 model.runAction(new MoveAction(transform, model, destination));
-        }
-
-        private void meleeAttack(TilePosition target, bool queueAction)
-        {
-            if (queueAction)
-            {
-                model.enqueueAction(new MoveAction(transform, model, target, 1));
-                model.enqueueAction(new DebugMessageAction("Casting an enemy action"));
-            }
-            else
-            {
-                model.runAction(new MoveAction(transform, model, target, 1));
-                model.enqueueAction(new DebugMessageAction("Casting an enemy action"));
-            }
         }
 
         public void setCurrentFullPathEndPos(TilePosition endPos)
