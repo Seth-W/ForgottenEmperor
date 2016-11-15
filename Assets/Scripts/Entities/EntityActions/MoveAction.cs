@@ -81,7 +81,7 @@
 
             if (pathingIndex >= pathingWaypoints.Length - (1 + pathingStepsToSkip))
             {
-                if(pathingIndex + 1< pathingWaypoints.Length)
+                if(pathingIndex + 1 < pathingWaypoints.Length)
                     TileManager.getTile(new TilePosition(pathingWaypoints[pathingIndex + 1])).updateEntity(null);
                 return true; 
             }

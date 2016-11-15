@@ -7,6 +7,7 @@
     {
         public AbilityAOE_Type AoEType;
         public AbilityTargetingType targetType;
+        public GameObject abilityPrefab;
         public int radius, length, range, width;
     }
 }

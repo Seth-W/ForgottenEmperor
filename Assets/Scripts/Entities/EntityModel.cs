@@ -14,6 +14,11 @@
         float _speed;
         public float speed { get { return _speed; } }
 
+
+        [SerializeField]
+        float _strength;
+        public float strength { get { return _strength; } }
+
         [SerializeField]
         EntityType _type;
         public EntityType type { get { return _type; } }

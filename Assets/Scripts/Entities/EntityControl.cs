@@ -32,7 +32,8 @@
         {
             if (data.mouseData.mouse1Down && data.inPlayableArea)
             {
-                Move(data.tilePos, Input.GetKey(KeyCode.LeftShift));
+                if(TileManager.getTile(data.tilePos).Model == null)
+                    Move(data.tilePos, Input.GetKey(KeyCode.LeftShift));
             }
             
             else if(data.mouseData.mouse0Down && data.inPlayableArea)
@@ -70,12 +71,12 @@
             if (queueAction)
             {
                 model.enqueueAction(new MoveAction(transform, model, target, abilityData.range));
-                model.enqueueAction(new DebugMessageAction("Casting an action"));
+                model.enqueueAction(new AbilityAction(target, abilityData, model));
             }
             else
             {
                 model.runAction(new MoveAction(transform, model, target, abilityData.range));
-                model.enqueueAction(new DebugMessageAction("Casting an action"));
+                model.enqueueAction(new AbilityAction(target, abilityData, model));
             }
         }
 

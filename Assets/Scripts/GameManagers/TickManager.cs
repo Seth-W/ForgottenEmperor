@@ -11,7 +11,10 @@
         [SerializeField]
         bool tickAutomatically;
         [SerializeField]
-        float ticksPerSecond;
+        int ticksPerSecond;
+
+        static int _TicksPerSecond;
+        public static int TicksPerSecond { get { return _TicksPerSecond; } }
 
         float timeSinceLastTick;
 
@@ -30,6 +33,7 @@
                     timeSinceLastTick = Time.time;
                 }
             }
+            _TicksPerSecond = ticksPerSecond;
         }
 
         private Tick getTickData()

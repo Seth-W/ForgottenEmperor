@@ -55,24 +55,24 @@
             int index = 1;
             for (int i = 1; i < 1 + radius; i++)
             {
-                retValue[++index] = new Vector2(0, i);
-                retValue[++index] = new Vector2(0, -i);
-                retValue[++index] = new Vector2(i, 0);
-                retValue[++index] = new Vector2(-i, 0);
+                retValue[index++] = new Vector2(0, i);
+                retValue[index++] = new Vector2(0, -i);
+                retValue[index++] = new Vector2(i, 0);
+                retValue[index++] = new Vector2(-i, 0);
             }
             for (int i = 1; i <= radius; i++)
             {
                 for (int j = 1; j <= radius - i; j++)
                 {
-                    retValue[++index] = new Vector2(i, j);
-                    retValue[++index] = new Vector2(-i, j);
-                    retValue[++index] = new Vector2(i, -j);
-                    retValue[++index] = new Vector2(-i, -j);
+                    Debug.Log(index);
+                    retValue[index++] = new Vector2(i, j);
+                    retValue[index++] = new Vector2(-i, j);
+                    retValue[index++] = new Vector2(i, -j);
+                    retValue[index++] = new Vector2(-i, -j);
                 }
             }
             return retValue;
         }
-
 
         private static Vector2[] applyLinearRotation(Vector2[] array, Vector2 startPos, Vector2 endPos)
         {
@@ -98,7 +98,7 @@
             return retValue;
         }
 
-        private static int getRadialTileCount(int radius)
+        public static int getRadialTileCount(int radius)
         {
             if (radius < 0)
             {

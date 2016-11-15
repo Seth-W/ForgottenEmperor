@@ -7,7 +7,7 @@
     {
         public static TilePosition nullTPos = new TilePosition(int.MinValue, int.MinValue);
 
-        public Vector3 tilePosition;
+        public Vector2 tilePosition;
         public int xIndex, yIndex;
 
         public TilePosition(Vector3 worldPosition)
@@ -22,7 +22,6 @@
 
             tilePosition.x = xIndex;
             tilePosition.y = yIndex;
-            tilePosition.z = 0;
 
             xIndex += DataManager.Width / 2;
             yIndex += DataManager.Height / 2;
@@ -37,7 +36,6 @@
 
             tilePosition.x = xIndex - DataManager.Width / 2;
             tilePosition.y = yIndex - DataManager.Height / 2;
-            tilePosition.z = 0;
         }
 
         public override string ToString()
