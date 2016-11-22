@@ -24,8 +24,9 @@ namespace CFE
             TickManager.TickUpdateEvent -= OnTickUpdate;
         }
 
-        public void Initialize()
+        public void Initialize(StatBlock castingEntityStats)
         {
+            damage += castingEntityStats.intelligence;
             timeSinceInit = 0;
             //TickManager.TickUpdateEvent += OnTickUpdate;
             if(!TileManager.getTile(new TilePosition(transform.position)).registerTileEffect(type, this))
@@ -47,7 +48,7 @@ namespace CFE
                     EResource resourceComponent = model.GetComponent<EResource>();
                     if (resourceComponent != null)
                     {
-                        resourceComponent.IncrementHealth(-10, damageType);
+                        resourceComponent.IncrementHealth(-damage, damageType);
                     }
                 }
             }

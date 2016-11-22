@@ -16,6 +16,7 @@
 
 
         protected GameObject tileEffectPrefab;
+        protected StatBlock casterStats;
 
 
         protected TilePosition startPos, endPos;
@@ -31,7 +32,7 @@
 
         }
 
-        public virtual void Initiate(TilePosition startPos, TilePosition endPos)
+        public virtual void Initiate(TilePosition startPos, TilePosition endPos, StatBlock casterStats)
         {
             TickManager.TickUpdateEvent += OnTickUpdate;
 
@@ -47,6 +48,9 @@
 
         public virtual void OnTickUpdate(Tick tickData)
         {
+            TilePosition currentPos = new TilePosition(transform.position);
+            if (TileManager.getTile(currentPos).getPathFindingEnabled() == false && currentPos != startPos)
+                Terminate();
             while (distanceSoFar.magnitude < totalDistance.magnitude)
             {
                 transform.Translate(dir * speed * Tick.DeltaTime);

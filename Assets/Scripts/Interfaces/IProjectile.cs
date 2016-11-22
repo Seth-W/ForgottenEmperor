@@ -4,7 +4,7 @@
 
     interface IProjectile
     {
-        void Initiate(TilePosition startPos, TilePosition endPos);
+        void Initiate(TilePosition startPos, TilePosition endPos, StatBlock casterStats);
         void OnTickUpdate(Tick tickData);
         void Terminate();
     }

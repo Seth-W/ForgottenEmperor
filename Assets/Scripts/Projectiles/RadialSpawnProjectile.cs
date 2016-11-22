@@ -13,15 +13,16 @@
             TickManager.TickUpdateEvent -= OnTickUpdate;
         }
 
-        public override void Initiate(TilePosition startPos, TilePosition endPos)
+        public override void Initiate(TilePosition startPos, TilePosition endPos, StatBlock casterStats)
         {
-            base.Initiate(startPos, endPos);
+            base.Initiate(startPos, endPos, casterStats);
             radius = AbilityManager.getAbilityData(abilityKey).radius;
+            this.casterStats = casterStats;
         }
 
         public override void Terminate()
         {
-            CastRadialAbility(endPos);
+            CastRadialAbility(new TilePosition(transform.position));
             Destroy(gameObject);
         }
 
@@ -33,7 +34,7 @@
             {
                 tilePositions[i] += target.tilePosition;
                 GameObject obj = Instantiate(tileEffectPrefab, tilePositions[i], Quaternion.identity) as GameObject;
-                obj.GetComponent<ITileEffect>().Initialize();
+                obj.GetComponent<ITileEffect>().Initialize(casterStats);
             }
         }
     }

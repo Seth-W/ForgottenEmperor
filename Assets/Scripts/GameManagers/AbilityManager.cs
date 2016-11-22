@@ -61,7 +61,7 @@
             //if (abilityData.AoEType == AbilityAOE_Type.Radial)
             //    CastRadialAbility(target, abilityData, castingEntity);
             GameObject obj = Instantiate(abilityData.projectilePrefab, castingEntity.tilePos.tilePosition, Quaternion.identity) as GameObject;
-            obj.GetComponent<IProjectile>().Initiate(castingEntity.tilePos, target);
+            obj.GetComponent<IProjectile>().Initiate(castingEntity.tilePos, target, castingEntity.GetComponent<EStat>().getStats());
         }
 
         private void CastRadialAbility(TilePosition target, AbilityBehaviorData abilityData, EntityModel castingEntity)
@@ -72,7 +72,7 @@
             {
                 tilePositions[i] += target.tilePosition;
                 GameObject obj = Instantiate(abilityData.tileEffectPrefab, tilePositions[i], Quaternion.identity) as GameObject;
-                obj.GetComponent<ITileEffect>().Initialize();
+                obj.GetComponent<ITileEffect>().Initialize(castingEntity.GetComponent<EStat>().getStats());
             }
 
             for (int i = 0; i < Vector2Helper.getRadialTileCount(abilityData.radius); i++)

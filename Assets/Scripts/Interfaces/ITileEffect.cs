@@ -3,7 +3,7 @@
 
     interface ITileEffect
     {
-        void Initialize();
+        void Initialize(StatBlock castingEntityStat);
         void OnTickUpdate(Tick data);
         void Terminate();
     }
