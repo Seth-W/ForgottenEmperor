@@ -5,9 +5,10 @@
     [System.Serializable]
     struct AbilityBehaviorData
     {
+        public string abilityName;
         public AbilityAOE_Type AoEType;
         public AbilityTargetingType targetType;
-        public GameObject abilityPrefab;
-        public int radius, length, range, width;
+        public GameObject projectilePrefab, tileEffectPrefab;
+        public int radius, length, range, width, manaCost;
     }
 }

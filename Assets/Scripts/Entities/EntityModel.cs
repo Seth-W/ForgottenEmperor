@@ -7,7 +7,6 @@
     class EntityModel : MonoBehaviour
     {
         public delegate void EntitySpawn(EntityModel model);
-
         public static EntitySpawn EntitySpawnEvent;
 
         [SerializeField]
@@ -23,8 +22,7 @@
         EntityType _type;
         public EntityType type { get { return _type; } }
 
-        TilePosition _tilePos;
-        TilePosition tilePos { get { return _tilePos; } }
+        public TilePosition tilePos { get { return new TilePosition(transform.position); } }
 
         EntityControl _control;
         public EntityControl control { get { return _control; } }
@@ -46,6 +44,9 @@
 
         Queue<IAction> actionQueue;
         public IAction currentAction;
+
+        bool _alive;
+        public bool alive { get { return _alive; } }
         
         #region MonoBehaviours
         void Start()
@@ -54,6 +55,7 @@
 
             _control = GetComponent<EntityControl>();
             _view = GetComponent<EntityView>();
+            _alive = true;
 
             EntitySpawnEvent(this);
 
@@ -78,6 +80,8 @@
         */
         void OnTickUpdate(Tick data)
         {
+            if (!alive)
+                return;
             if(currentAction != null)
             {
                 if (cancellingAction)
@@ -114,6 +118,23 @@
 
         /**
         *<summary>
+        *Forces the given IAction to the front of the queue
+        *</summary>
+        */
+        public void forceEnqueueAction(IAction action)
+        {
+            Queue<IAction> temp = new Queue<IAction>();
+            temp.Enqueue(currentAction);
+            currentAction = action;
+            while(actionQueue.Count > 0)
+            {
+                temp.Enqueue(actionQueue.Dequeue());
+            }
+            actionQueue = temp;
+        }
+
+        /**
+        *<summary>
         *Sets the given <see cref="IAction"/> to be the current action for the entity and clears any queued actions
         *</summary>
         */
@@ -123,6 +144,18 @@
             actionQueue.Enqueue(action);
             //currentAction = action;
             cancellingAction = currentAction != null;
+        }
+
+        /**
+        *<summary>
+        *Sets the alive property for this Entity
+        *</summary>
+        */
+        public void setAlive(bool b)
+        {
+            _alive = b;
+            if (!b)
+                Debug.Log(" \'killing\' this entity");
         }
     }
 }

@@ -119,7 +119,8 @@
             if (cancelFirstCall)
             {
                 cancelFirstCall = false;
-                pathingWaypoints = Pathfinder.findPath(new TilePosition(pathingWaypoints[pathingIndex]), new TilePosition(pathingWaypoints[pathingIndex + 1])).ToVector3Array();
+                if(pathingWaypoints.Length > 1)
+                    pathingWaypoints = Pathfinder.findPath(new TilePosition(pathingWaypoints[pathingIndex]), new TilePosition(pathingWaypoints[pathingIndex + 1])).ToVector3Array();
                 pathingIndex = 0;
                 pathingInterpolator = getAdjustedInterpolator(pathingIndex);
                 TileManager.getTile(new TilePosition(pathingWaypoints[1])).updateEntity(model);

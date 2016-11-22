@@ -30,6 +30,8 @@
 
         public void OnFrameInput(FrameInputData data)
         {
+            if (!model.alive)
+                return;
             if (data.mouseData.mouse1Down && data.inPlayableArea)
             {
                 if(TileManager.getTile(data.tilePos).Model == null)

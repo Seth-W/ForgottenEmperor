@@ -12,6 +12,16 @@
             init();
         }
 
+        void OnEnable()
+        {
+            TickManager.TickUpdateEvent += OnTickUpdate;
+        }
+
+        void OnDisable()
+        {
+            TickManager.TickUpdateEvent -= OnTickUpdate;
+        }
+
         /**
         *<summary>
         *Returns the <see cref="TileModel"/> at the given indices
@@ -30,6 +40,14 @@
         public static TileModel getTile(TilePosition tilePos)
         {
             return tileMap[tilePos.xIndex, tilePos.yIndex];
+        }
+
+        private void OnTickUpdate(Tick data)
+        {
+            foreach (TileModel item in _tileMap)
+            {
+                item.OnTickUpdate(data);
+            }
         }
 
         void init()

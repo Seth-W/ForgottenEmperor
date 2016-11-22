@@ -64,7 +64,6 @@
             {
                 for (int j = 1; j <= radius - i; j++)
                 {
-                    Debug.Log(index);
                     retValue[index++] = new Vector2(i, j);
                     retValue[index++] = new Vector2(-i, j);
                     retValue[index++] = new Vector2(i, -j);

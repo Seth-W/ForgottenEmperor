@@ -16,24 +16,24 @@
         static int _TicksPerSecond;
         public static int TicksPerSecond { get { return _TicksPerSecond; } }
 
-        float timeSinceLastTick;
+        float timeAtLastTick;
 
         void Start()
         {
-            timeSinceLastTick = Time.time;
+            timeAtLastTick = Time.time;
+            _TicksPerSecond = ticksPerSecond;
         }
 
         void Update()
         {
             if (!InputManager.isPaused)
             {
-                if ((Time.time - timeSinceLastTick) * ticksPerSecond >= 1)
+                if ((Time.time - timeAtLastTick) * ticksPerSecond >= 1)
                 {
                     TickUpdateEvent(getTickData());
-                    timeSinceLastTick = Time.time;
+                    timeAtLastTick = Time.time;
                 }
             }
-            _TicksPerSecond = ticksPerSecond;
         }
 
         private Tick getTickData()

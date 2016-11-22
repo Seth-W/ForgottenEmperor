@@ -4,15 +4,17 @@
 
     class AbilitySelectButton : MonoBehaviour
     {
-        public delegate void AbilitySelectButtonClick(int character, int button);
+        public delegate void AbilitySelectButtonClick(int characterIndex, string abilityName);
         public static AbilitySelectButtonClick AbilitySelectButtonClickEvent;
 
         [SerializeField]
-        int abilityIndex, characterIndex;
+        string abilityName;
+        [SerializeField]
+        int characterIndex;
 
         public void OnClick()
         {
-            AbilitySelectButtonClickEvent(characterIndex, abilityIndex);
+            AbilitySelectButtonClickEvent(characterIndex, abilityName);
         }
     }
 }

@@ -3,23 +3,32 @@
     using UnityEngine;
     using Actions.EntityActions;
     using Extensions;
+    using System.Collections.Generic;
 
     class AbilityManager : MonoBehaviour
     {
         public static AbilityBehaviorData activeAbility;
+        static Dictionary<string, AbilityBehaviorData> abilityBehavior;
 
         [SerializeField]
         AbilityIndicatorControl spellIndicator;
 
         [SerializeField]
-        AbilityBehaviorData[] AbilityBehavior;
+        AbilityLookupTable abilityLookupTable;
 
-        int activeIndex;
+        Dictionary<string, AbilityBehaviorData> _abilityBehavior;
+
 
         #region
         void Start()
         {
+            _abilityBehavior = new Dictionary<string, AbilityBehaviorData>();
+            abilityBehavior = _abilityBehavior;
 
+            for (int i = 0; i < abilityLookupTable._abilityLookupTable.Length; i++)
+            {
+                _abilityBehavior.Add(abilityLookupTable._abilityLookupTable[i].abilityName, abilityLookupTable._abilityLookupTable[i]);
+            }
         }
 
         void OnEnable()
@@ -35,19 +44,24 @@
         }
         #endregion
 
-        private void OnAbilitySelectButtonClickEvent(int character, int ability)
+        public static AbilityBehaviorData getAbilityData(string key)
         {
-            Debug.Log(character + "," + ability);
-            activeIndex = 4 * character + ability;
+            return abilityBehavior[key];
+        }
+
+        private void OnAbilitySelectButtonClickEvent(int characterIndex, string abilityKey)
+        {
             spellIndicator.enabled = true;
-            activeAbility = AbilityBehavior[activeIndex];
+            activeAbility = _abilityBehavior[abilityKey];
             spellIndicator.setIndicator(activeAbility);
         }
 
         private void OnAbilityCastEvent(TilePosition target, AbilityBehaviorData abilityData, EntityModel castingEntity)
         {
-            if (abilityData.AoEType == AbilityAOE_Type.Radial)
-                CastRadialAbility(target, abilityData, castingEntity);
+            //if (abilityData.AoEType == AbilityAOE_Type.Radial)
+            //    CastRadialAbility(target, abilityData, castingEntity);
+            GameObject obj = Instantiate(abilityData.projectilePrefab, castingEntity.tilePos.tilePosition, Quaternion.identity) as GameObject;
+            obj.GetComponent<IProjectile>().Initiate(castingEntity.tilePos, target);
         }
 
         private void CastRadialAbility(TilePosition target, AbilityBehaviorData abilityData, EntityModel castingEntity)
@@ -57,7 +71,7 @@
             for (int i = 0; i < tilePositions.Length; i++)
             {
                 tilePositions[i] += target.tilePosition;
-                GameObject obj = Instantiate(abilityData.abilityPrefab, tilePositions[i], Quaternion.identity) as GameObject;
+                GameObject obj = Instantiate(abilityData.tileEffectPrefab, tilePositions[i], Quaternion.identity) as GameObject;
                 obj.GetComponent<ITileEffect>().Initialize();
             }
 

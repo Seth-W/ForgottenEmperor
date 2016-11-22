@@ -25,7 +25,10 @@
 
         public bool execute()
         {
-            Debug.Log("Executing an ability");
+            CreatureResourceComponent resourceComponent = caster.GetComponent<CreatureResourceComponent>();
+            if (resourceComponent.GetMana() < abilityData.manaCost)
+                return true;
+            resourceComponent.IncrementMana(-abilityData.manaCost);
             AbilityCastEvent(tilePos, abilityData, caster);
             return true;
         }

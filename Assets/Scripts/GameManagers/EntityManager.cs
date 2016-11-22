@@ -10,17 +10,21 @@
         public static ActiveEntityUpdate ActiveEntityUpdateEvent;
 
         int _activePlayerIndex = 0;
-        int _activeAbilityIndex = 0;
+        string _activeAbilityKey = "Move";
         List<EntityModel> _playerEntities;
         static List<EntityModel> playerEntities;
         static int activePlayerIndex = 0;
-        static int activeAbilityIndex = 0;
-        public static int currentAbilityIndex { get { return activePlayerIndex * 4 + activeAbilityIndex; } }
 
         public static EntityModel activePlayer { get { return playerEntities[activePlayerIndex]; } }
+        public static EntityModel enemyModel;
 
         [SerializeField]
         Transform pathfindingDebugObj;
+
+        public static EntityModel getPlayer(int index)
+        {
+            return playerEntities[index];
+        }
 
         #region MonoBehaviours
         void OnEnable()
@@ -67,6 +71,8 @@
                 _playerEntities = new List<EntityModel>();
             if(model.type == EntityType.Player)
                 _playerEntities.Add(model);
+            if (model.type == EntityType.Enemy)
+                enemyModel = model;
         }
 
         /**
@@ -88,11 +94,10 @@
             UpdateActivePlayerIndex(playerIndex);
         }
 
-        private void OnAbilitySelectButtonClick(int character, int button)
+        private void OnAbilitySelectButtonClick(int character, string abilityKey)
         {
             UpdateActivePlayerIndex(character);
-            _activeAbilityIndex = button;
-            activeAbilityIndex = button;
+            _activeAbilityKey = abilityKey;
         }
 
 

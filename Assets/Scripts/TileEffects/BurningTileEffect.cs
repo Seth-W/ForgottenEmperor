@@ -10,6 +10,10 @@ namespace CFE
     class BurningTileEffect : MonoBehaviour, ITileEffect
     {
         [SerializeField]
+        TileEffectType type;
+        [SerializeField]
+        DamageType damageType;
+        [SerializeField]
         int duration;
         int timeSinceInit;
         [SerializeField]
@@ -23,7 +27,11 @@ namespace CFE
         public void Initialize()
         {
             timeSinceInit = 0;
-            TickManager.TickUpdateEvent += OnTickUpdate;
+            //TickManager.TickUpdateEvent += OnTickUpdate;
+            if(!TileManager.getTile(new TilePosition(transform.position)).registerTileEffect(type, this))
+            {
+                Destroy(gameObject);
+            }
         }
 
         public void OnTickUpdate(Tick data)
@@ -33,16 +41,22 @@ namespace CFE
                 Terminate();
             if (timeSinceInit % TickManager.TicksPerSecond == 0)
             {
-                EntityModel modelOnTile = TileManager.getTile(new TilePosition(transform.position)).Model;
-                if(modelOnTile != null)
-                    Debug.Log("Dealing " + damage + " damage to: " + modelOnTile);
+                EntityModel model = TileManager.getTile(new TilePosition(transform.position)).Model;
+                if (model != null)
+                {
+                    EResource resourceComponent = model.GetComponent<EResource>();
+                    if (resourceComponent != null)
+                    {
+                        resourceComponent.IncrementHealth(-10, damageType);
+                    }
+                }
             }
         }
 
         public void Terminate()
         {
-            Debug.Log("Terminating burning tile effect");
-            TickManager.TickUpdateEvent -= OnTickUpdate;
+            //TickManager.TickUpdateEvent -= OnTickUpdate;
+            TileManager.getTile(new TilePosition(transform.position)).deregisterTileEffect(type);
             Destroy(gameObject);
         }
 
