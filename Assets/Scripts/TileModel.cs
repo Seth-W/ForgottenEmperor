@@ -32,6 +32,11 @@
             return pathingEnabled && model == null;
         }
 
+        public void setPathFindingEnabled(bool b)
+        {
+            pathingEnabled = b;
+        }
+
         /**
         *<summary>
         *Stores the given <see cref="EntityModel"/> in the model field
