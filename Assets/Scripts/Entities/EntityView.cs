@@ -10,7 +10,7 @@
 
         void Start()
         {
-            GetComponent<Renderer>().material.color = color;
+            //GetComponent<Renderer>().material.color = color;
         }
     }
 }

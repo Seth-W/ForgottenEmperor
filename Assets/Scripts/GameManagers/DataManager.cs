@@ -6,7 +6,9 @@
     {
         [SerializeField]
         int _width, _height;
-        public static int Width, Height;
+        private static int _Width, _Height;
+        public static int Width { get { return _Width; } }
+        public static int Height { get { return _Height; } }
         private static bool alreadyInitialized = false;
 
         void Start()
@@ -17,8 +19,8 @@
                 Destroy(this);
             }
             alreadyInitialized = true;
-            Width = _width;
-            Height = _height;
+            _Width = _width;
+            _Height = _height;
             Pathfinder.init();
         }
 

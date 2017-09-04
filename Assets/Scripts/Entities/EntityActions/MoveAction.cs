@@ -76,6 +76,9 @@
                         firstTile.updateEntity(model);
                     else
                         correctForBlockedPath();
+                    model.setAnimatorParams("isMoving", true);
+                    model.setAnimatorParams("EastWest", pathingWaypoints[pathingIndex + 1].x - pathingWaypoints[pathingIndex].x);
+                    model.setAnimatorParams("NorthSouth", pathingWaypoints[pathingIndex + 1].y - pathingWaypoints[pathingIndex].y);
                 }
             }
 
@@ -83,12 +86,15 @@
             {
                 if(pathingIndex + 1 < pathingWaypoints.Length)
                     TileManager.getTile(new TilePosition(pathingWaypoints[pathingIndex + 1])).updateEntity(null);
+                model.setAnimatorParams("isMoving", false);
                 return true; 
             }
             if (pathingInterpolator < 1f)
             {
                 entityTransform.position = Vector3.Lerp(pathingWaypoints[pathingIndex], pathingWaypoints[pathingIndex + 1], pathingInterpolator);
                 pathingInterpolator += Time.deltaTime * 10 * model.speed;
+                model.setAnimatorParams("EastWest", pathingWaypoints[pathingIndex + 1].x - pathingWaypoints[pathingIndex].x);
+                model.setAnimatorParams("NorthSouth", pathingWaypoints[pathingIndex + 1].y - pathingWaypoints[pathingIndex].y);
                 return false;
             }
 
@@ -134,6 +140,7 @@
             entityTransform.position = pathingWaypoints[1];
             model.control.setCurrentFullPathEndPos(new TilePosition(pathingWaypoints[1]));
             TileManager.getTile(new TilePosition(pathingWaypoints[0])).updateEntity(null);
+            model.setAnimatorParams("isMoving", false);
             return true;
         }
 
@@ -145,6 +152,8 @@
         private void incrementWaypointIndex()
         {
             entityTransform.position = pathingWaypoints[pathingIndex + 1];
+            model.setAnimatorParams("EastWest", pathingWaypoints[pathingIndex + 1].x - pathingWaypoints[pathingIndex].x);
+            model.setAnimatorParams("NorthSouth", pathingWaypoints[pathingIndex + 1].y - pathingWaypoints[pathingIndex].y);
             pathingIndex++;
             pathingInterpolator = 0f;
             TileManager.getTile(new TilePosition(pathingWaypoints[pathingIndex - 1])).updateEntity(null);
