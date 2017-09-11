@@ -9,6 +9,9 @@
         public delegate void FrameInput(FrameInputData data);
         public static FrameInput FrameInputEvent;
 
+		public delegate void PauseStatus(bool status);
+		public static PauseStatus PauseEvent;
+
         static bool _isPaused = false;
 
         public static bool isPaused { get { return _isPaused; } }
@@ -17,8 +20,11 @@
         #region
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-                _isPaused = !_isPaused;
+			if (Input.GetKeyDown (KeyCode.Space))
+			{
+				_isPaused = !_isPaused;
+				PauseEvent (_isPaused);
+			}
             FrameInputEvent(new FrameInputData(Input.mousePosition, _isPaused));
         }
 

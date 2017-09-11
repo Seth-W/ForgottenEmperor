@@ -29,8 +29,6 @@
         EntityView _view;
         public EntityView view { get { return _view; } }
 
-        Animator _anim;
-
         public bool isMoving
         {
             get
@@ -58,8 +56,6 @@
             _control = GetComponent<EntityControl>();
             _view = GetComponent<EntityView>();
             _alive = true;
-
-            _anim = GetComponentInChildren<Animator>();
 
             EntitySpawnEvent(this);
 
@@ -160,46 +156,6 @@
             _alive = b;
             if (!b)
                 Debug.Log(" \'killing\' this entity");
-        }
-
-        /**
-        *<summary>
-        *Sets an integer animator parameter for this entity
-        *</summary>
-        */
-        public void setAnimatorParams(string s, int i)
-        {
-            _anim.SetInteger(s, i);
-        }
-
-        /**
-        *<summary>
-        *Sets a float animator parameter for this entity
-        *</summary>
-        */
-        public void setAnimatorParams(string s, float f)
-        {
-            _anim.SetFloat(s, f);
-        }
-
-        /**
-        *<summary>
-        *Sets a boolean animator parameter for this entity
-        *</summary>
-        */
-        public void setAnimatorParams(string s, bool b)
-        {
-            _anim.SetBool(s, b);
-        }
-
-        /**
-        *<summary>
-        *Activates a trigger animation parameter for this entity
-        *</summary>
-        */
-        public void setAnimatorParams(string s)
-        {
-            _anim.SetTrigger(s);
         }
     }
 }
